@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
  */
 public class MetodosBaseDatos {
 
+    Connection conectar=null; 
+    
     /**
      *
      * @param driver Gestiona el acceso a un servidor Mysql
@@ -61,40 +63,52 @@ public class MetodosBaseDatos {
      * @param user Usuario de la Base de Datos
      * @param password Contraseña de la Base de Datos
      * @param table_name Nombre de la tabla sobre la que se quiere hacer la consulta
-     * @param column_name Nombre de la columna 
-     * @param valorC  Valor de la columna 
      */
-    public void select(String driver, String url, String user, String password, String table_name, String column_name, String valorC) {
+    public void select(String driver, String url, String user, String password, String table_name) {
         ConexionBD cc = new ConexionBD();
         Connection cn = cc.ConexionBD(driver, url, user, password);
-        String selec = "SELECT * FROM " + table_name + "WHERE " + column_name + " = '" + valorC + "'";
+        String selec = "SELECT * FROM " + table_name;
         try {
             Statement select = cn.createStatement();
-            select.executeQuery(selec);
+            ResultSet rs = select.executeQuery(selec);
+            System.out.println("\n TODOS LOS REGISTROS DE LA TABLA ARTICULO:\n");
+            while (rs.next()) {
+                System.out.println("idarticulo: " + rs.getInt(1) 
+                        + ", descripcion: " + rs.getString(2) 
+                        + ", precio: " + rs.getInt(3)
+                        + ", stock: " + rs.getInt(4)
+                        + ", codcategoria: " + rs.getInt(5));
+            }
         } catch (SQLException e) {
-            System.out.println("Error al modificar");
+            System.out.println("Error al visualizar");
         }
     }
     
-    /**
-     * Método para la inserción de articulos nuevos
-     * 
-     * @param driver Gestiona el acceso a un servidor Mysql
-     * ("com.mysql.jdbc.Driver")
-     * @param url Nombre del servidor y nombre de la Base de Datos
-     * ("jdbc:mysql://localhost/controldestock";)
-     * @param user Usuario de la Base de Datos
-     * @param password Contraseña de la Base de Datos
-     */
-    public void insertArticulos(String driver, String url, String user, String password) {
+   /**
+    * Método para la inserción de articulos nuevos
+    * 
+    * @param driver Gestiona el acceso a un servidor Mysql
+    * ("com.mysql.jdbc.Driver")
+    * @param url Nombre del servidor y nombre de la Base de Datos
+    * ("jdbc:mysql://localhost/controldestock";)
+    * @param user Usuario de la Base de Datos
+    * @param password Contraseña de la Base de Datos
+    * @param id 
+    * @param des
+    * @param p
+    * @param s
+    * @param cat 
+    */
+    public void insertArticulos(String driver, String url, String user, String password, int id, String des, int p, int s, int cat) {
         ConexionBD cc = new ConexionBD();
         Connection cn = cc.ConexionBD(driver, url, user, password);
-        String insrt = "INSERT INTO articulo (idarticulo, descripcion, precio, stock, codcategoria) VALUES (?,?,?,?,?)";
+        String insrt = "INSERT INTO articulo (idarticulo, descripcion, precio, stock, codcategoria) VALUES ("+id+","+des+","+p+","+p+","+s+","+cat+")";
         try {
             Statement insert = cn.createStatement();
             insert.executeUpdate(insrt);
+            System.out.println("Inserción correcta");
         } catch (SQLException e) {
-            System.out.println("Error al modificar");
+            System.out.println("Error al insertar");
         }
     }
 
@@ -119,6 +133,7 @@ public class MetodosBaseDatos {
         try {
             Statement update = cn.createStatement();
             update.executeUpdate(updte);
+            System.out.println("Modificación correcta");
         } catch (SQLException e) {
             System.out.println("Error al modificar");
         }
@@ -144,8 +159,9 @@ public class MetodosBaseDatos {
         try {
             Statement delete = cn.createStatement();
             delete.executeUpdate(delet);
+            System.out.println("Borrado correcto");
         } catch (SQLException e) {
-            System.out.println("Error al modificar");
+            System.out.println("Error al borrar");
         }
     }
 
