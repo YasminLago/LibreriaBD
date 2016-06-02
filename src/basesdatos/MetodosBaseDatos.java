@@ -1,6 +1,7 @@
 package basesdatos;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,7 +27,7 @@ public class MetodosBaseDatos {
      * @param pass Contraseña para acceder al programa
      * @return Retorna un 1 si la conexión es exitosa
      */
-    public static int empleados_login(String driver, String url, String user, String password, String usuario, String pass) {
+    public  int empleados_login(String driver, String url, String user, String password, String usuario, String pass) {
         int resultado = 0;
 
         String SSQL = "SELECT * FROM empleado WHERE nombre = '" + usuario + "'AND  clave ='" + pass + "'";
@@ -38,6 +39,7 @@ public class MetodosBaseDatos {
             ResultSet rs = st.executeQuery(SSQL);
             if (rs.next()) {
                 resultado = 1;
+                System.out.println("Bienvenido");
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex);
@@ -93,25 +95,25 @@ public class MetodosBaseDatos {
     * ("jdbc:mysql://localhost/controldestock";)
     * @param user Usuario de la Base de Datos
     * @param password Contraseña de la Base de Datos
-    * @param id 
-    * @param des
-    * @param p
-    * @param s
-    * @param cat 
+    * @param id Código articulo
+    * @param des Descripción del articulo
+    * @param p Precio del articulo
+    * @param s Stock disponible del articulo
+    * @param cat Categoría del articulo
     */
-    public void insertArticulos(String driver, String url, String user, String password, int id, String des, int p, int s, int cat) {
+    public void insertArticulos(String driver, String url, String user, String password, String id, String des, String p, String s, String cat) {
         ConexionBD cc = new ConexionBD();
         Connection cn = cc.ConexionBD(driver, url, user, password);
-        String insrt = "INSERT INTO articulo (idarticulo, descripcion, precio, stock, codcategoria) VALUES ("+id+","+des+","+p+","+p+","+s+","+cat+")";
+        String insrt = "INSERT INTO articulo (idarticulo, descripcion, precio, stock, codcategoria) VALUES ("+id+",'"+des+"',"+p+","+p+","+s+","+cat+")";
         try {
-            Statement insert = cn.createStatement();
-            insert.executeUpdate(insrt);
+            PreparedStatement st = cn.prepareStatement(insrt);
+            st.executeUpdate(insrt);
             System.out.println("Inserción correcta");
         } catch (SQLException e) {
             System.out.println("Error al insertar");
         }
     }
-
+    
     /**
      * Método para la modificacion de articulos existentes
      * 
